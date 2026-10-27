@@ -1,0 +1,83 @@
+import os
+
+os.chdir(r"C:\Users\user\Downloads\Python\Ground States\Multiplicity 4")
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.ticker as ticker
+import numpy as np
+from scipy.interpolate import CubicSpline
+
+
+df = pd.read_csv('new 12.txt', sep=r"\s+", header=None)
+
+df.columns = [
+    "Rvec", "Multi2", "CI2", "CI Davison2", "CI Pople2",
+    "Multi4", "CI4", "CI Davison4", "CI Pople4"
+]
+
+print(df)
+
+
+fig, ax = plt.subplots(figsize=(14, 8))
+
+
+# Create 500 closely spaced bond-radius points
+x_smooth = np.linspace(df['Rvec'].min(), df['Rvec'].max(), 500)
+
+
+# Natural cubic spline for each potential-energy curve
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['Multi2'],
+                    bc_type='natural')(x_smooth),
+        label='Multi2', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['CI2'],
+                    bc_type='natural')(x_smooth),
+        label='CI2', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['CI Davison2'],
+                    bc_type='natural')(x_smooth),
+        label='CI Davison2', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['CI Pople2'],
+                    bc_type='natural')(x_smooth),
+        label='CI Pople2', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['Multi4'],
+                    bc_type='natural')(x_smooth),
+        label='Multi4', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['CI4'],
+                    bc_type='natural')(x_smooth),
+        label='CI4', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['CI Davison4'],
+                    bc_type='natural')(x_smooth),
+        label='CI Davison4', linewidth=2)
+
+ax.plot(x_smooth,
+        CubicSpline(df['Rvec'], df['CI Pople4'],
+                    bc_type='natural')(x_smooth),
+        label='CI Pople4', linewidth=2)
+
+
+tick_spacing = 1
+ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+
+plt.xlabel('Bond Radius')
+plt.ylabel('Energy')
+
+plt.title(
+    'Potential Energy Curves - Multiplicity 4 Ground states '
+    'for (1)Πₓ, (1)Πᵧ, (1)Σ⁻'
+)
+
+plt.legend()
+plt.show()
